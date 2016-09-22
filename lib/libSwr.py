@@ -22,6 +22,7 @@ def libSwrListMain():
 	libMediathek.addEntry({'name':translation(31033), 'mode':'libSwrListDate'})
 	libMediathek.addEntry({'name':translation(31034), 'mode':'libSwrListDir', 'url':'http://swrmediathek.de/app-2/rubriken.html'})
 	libMediathek.addEntry({'name':translation(31035), 'mode':'libSwrListDir', 'url':'http://swrmediathek.de/app-2/themen.html'})
+	libMediathek.addEntry({'name':translation(31039), 'mode':'libSwrSearch'})
 	#libMediathek.addEntry({'name':translation(31032), 'mode':'libSwrListLetters'})
 	#libMediathek.addEntry({'name':translation(31033), 'mode':'libSwrListDate'})
 	#libMediathek.addEntry({'name':translation(31034), 'mode':'libArdListVideos', 'url':'http://www.ardmediathek.de/appdata/servlet/tv/Rubriken/mehr?documentId=21282550&json'})
@@ -38,6 +39,14 @@ def libSwrListDateVideos():
 def libSwrListVideos():
 	libMediathek.addEntries(libSwrParser.getList(params['url'],'video','libSwrPlay'))
 
+def libSwrSearch():
+	keyboard = xbmc.Keyboard('', translation(31039))
+	keyboard.doModal()
+	if keyboard.isConfirmed() and keyboard.getText():
+		search_string = urllib.quote_plus(keyboard.getText())
+		url = 'http://swrmediathek.de/app-2/suche/' + search_string
+		libMediathek.addEntries(libSwrParser.getList(url,'video','libSwrPlay'))	
+	
 def libSwrPlay():
 	url = libSwrParser.getVideo(params['url'])
 	listitem = xbmcgui.ListItem(path=url)
@@ -68,8 +77,7 @@ def libSwrListShows():
 	xbmc.log('listshows')
 	libMediathek.addEntries(libSwrParser.parseShows(params['name']))
 	
-	
-	
+
 def list():	
 	modes = {
 	'libSwrListDir': libSwrListDir,
@@ -77,6 +85,7 @@ def list():
 	'libSwrListDateVideos': libSwrListDateVideos,
 	
 	'libSwrListVideos': libSwrListVideos,
+	'libSwrSearch': libSwrSearch,
 	
 	'libSwrPlay': libSwrPlay,
 	
